@@ -3,7 +3,6 @@ from collections import deque
 
 def quickestWayUp(ladders, snakes):
     board = {}
-
     for ladder in ladders:
         board[ladder[0]] = ladder[1]
 
