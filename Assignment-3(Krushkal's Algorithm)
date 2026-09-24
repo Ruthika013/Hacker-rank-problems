@@ -1,0 +1,73 @@
+def kruskals(g_nodes, g_from, g_to, g_weight):
+
+    # Create a list of edges
+    edges = []
+
+    for i in range(len(g_from)):
+        edges.append((g_weight[i], g_from[i], g_to[i]))
+
+    # Sort edges by weight
+    # If weight is same, sort by u + v
+    edges.sort(key=lambda x: (x[0], x[1] + x[2]))
+
+    # Parent array for Disjoint Set Union
+    parent = [i for i in range(g_nodes + 1)]
+
+    # Find the parent of a node
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+
+    # Join two sets
+    def union(a, b):
+        root_a = find(a)
+        root_b = find(b)
+
+        # If same parent, edge creates a cycle
+        if root_a == root_b:
+            return False
+
+        parent[root_b] = root_a
+        return True
+
+    total_weight = 0
+    edges_used = 0
+
+    # Kruskal's algorithm
+    for weight, u, v in edges:
+
+        # Add edge only if it does not create a cycle
+        if union(u, v):
+            total_weight += weight
+            edges_used += 1
+
+            # MST needs n - 1 edges
+            if edges_used == g_nodes - 1:
+                break
+
+    return total_weight
+
+
+# Read number of nodes and edges
+g_nodes, g_edges = map(int, input().split())
+
+# Store graph information
+g_from = []
+g_to = []
+g_weight = []
+
+# Read all edges
+for _ in range(g_edges):
+
+    u, v, w = map(int, input().split())
+
+    g_from.append(u)
+    g_to.append(v)
+    g_weight.append(w)
+
+# Find the total weight of the MST
+result = kruskals(g_nodes, g_from, g_to, g_weight)
+
+# Print answer
+print(result)
